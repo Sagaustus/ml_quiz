@@ -6,7 +6,7 @@ from .database import SessionLocal, engine, Base
 
 app = FastAPI()
 
-Base.metadata.create_all(bind=engine)
+
 
 # Dependency to get DB session
 def get_db():

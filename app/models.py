@@ -19,3 +19,5 @@ class QuizResponse(Base):
     question = relationship("QuizQuestion", back_populates="responses")
 
 QuizQuestion.responses = relationship("QuizResponse", order_by=QuizResponse.id, back_populates="question")
+
+
