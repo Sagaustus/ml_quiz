@@ -1,7 +1,7 @@
 import os
 from sqlalchemy import create_engine
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv('DATABASE_URL').replace("postgres://", "postgresql+psycopg2://", 1)
 print(f"DATABASE_URL: {DATABASE_URL}")  # Print the URL for debugging
 
 try:
