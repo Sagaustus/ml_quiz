@@ -1,26 +1,12 @@
-import os
-from fastapi import FastAPI, Depends
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from .models import QuizQuestion, QuizResponse
+from .ml_model import recommend_topics
+from .database import SessionLocal, engine, Base
 
-# Database URL environment variable from Heroku
-DATABASE_URL = os.getenv('DATABASE_URL').replace("postgres://", "postgresql+psycopg2://", 1)  # Modify this line
-
-# ... (rest of your code)
-
-# Remove this line (let Alembic handle schema changes)
-# Base.metadata.create_all(bind=engine) 
-
-# ... (rest of your code)
-
-# SQLAlchemy setup
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-# FastAPI app instance
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 # Dependency to get DB session
 def get_db():
@@ -30,20 +16,25 @@ def get_db():
     finally:
         db.close()
 
-# Example SQLAlchemy model
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
+# Endpoint to get all quiz questions
+@app.get("/quiz/")
+def read_quiz(db: Session = Depends(get_db)):
+    questions = db.query(QuizQuestion).all()
+    return questions
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+# Endpoint to submit a quiz response
+@app.post("/quiz/response/")
+def submit_response(response: QuizResponse, db: Session = Depends(get_db)):
+    db.add(response)
+    db.commit()
+    db.refresh(response)
+    return response
 
-# Example route to get all users
-@app.get("/users/")
-def read_users(db: Session = Depends(get_db)):
-    users = db.query(User).all()
-    return users
+# Endpoint to get recommendations based on quiz performance
 
+@app.get("/recommendations/")
+def get_recommendations(db: Session = Depends(get_db)):
+    responses = db.query(QuizResponse).all()
+    recommendations = recommend_topics(responses)
+    return recommendations
 
