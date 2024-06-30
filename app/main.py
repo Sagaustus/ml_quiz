@@ -36,9 +36,6 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
 
-# Create the tables in the database
-Base.metadata.create_all(bind=engine)
-
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
