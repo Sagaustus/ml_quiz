@@ -23,4 +23,4 @@ def load_questions(csv_file):
         session.commit()
 
 if __name__ == "__main__":
-    load_questions('logic.csv')
+    load_questions('questions.csv')
