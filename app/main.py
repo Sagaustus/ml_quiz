@@ -5,7 +5,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
 # Database URL environment variable from Heroku
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv('DATABASE_URL').replace("postgres://", "postgresql+psycopg2://", 1)  # Modify this line
+
+# ... (rest of your code)
+
+# Remove this line (let Alembic handle schema changes)
+# Base.metadata.create_all(bind=engine) 
+
+# ... (rest of your code)
 
 # SQLAlchemy setup
 engine = create_engine(DATABASE_URL)
@@ -41,3 +48,5 @@ def read_root():
 def read_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
+
+
