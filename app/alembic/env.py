@@ -2,7 +2,9 @@ import os
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 from logging.config import fileConfig
+from app.models import Base
 
+target_metadata = Base.metadata
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -55,3 +57,5 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+
+
