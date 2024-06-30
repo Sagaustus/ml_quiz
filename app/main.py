@@ -1,8 +1,18 @@
+import os
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from .models import QuizQuestion, QuizResponse
 from .ml_model import recommend_topics
 from .database import SessionLocal, engine, Base
+
+# Database URL environment variable from Heroku
+DATABASE_URL = os.getenv('DATABASE_URL').replace("postgres://", "postgresql+psycopg2://", 1)  # Modify this line
+
+
+# SQLAlchemy setup
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
 app = FastAPI()
 
@@ -37,4 +47,7 @@ def get_recommendations(db: Session = Depends(get_db)):
     responses = db.query(QuizResponse).all()
     recommendations = recommend_topics(responses)
     return recommendations
+
+
+
 
