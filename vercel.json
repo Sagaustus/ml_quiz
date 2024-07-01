@@ -1,0 +1,21 @@
+{
+    "version": 2,
+    "projects": {
+      "frontend": {
+        "root": "frontend",
+        "builds": [
+          {
+            "src": "frontend/next.config.js",
+            "use": "@vercel/next"
+          }
+        ],
+        "routes": [
+          { "src": "/(.*)", "dest": "/frontend/$1" }
+        ]
+      }
+    },
+    "env": {
+      "NEXT_PUBLIC_API_URL": "https://your-backend-api-url"
+    }
+  }
+  

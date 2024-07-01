@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-gunicorn
-alembic
-SQLAlchemy
-psycopg2-binary
